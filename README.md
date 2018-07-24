@@ -32,7 +32,7 @@ tests](https://github.com/radutopala/webdriver/blob/master/remote_test.go) for b
 
 Download and pack the ChromeDriver binaries:
 
-    $ go run download.go
+    $ go run download/download.go
 
 You only have to do this once initially and later when version numbers in download.go change.
 

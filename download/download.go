@@ -1,4 +1,4 @@
-package bin
+package main
 
 import (
 	"fmt"
@@ -18,7 +18,10 @@ type file struct {
 	rename string
 }
 
-var latest []byte
+const (
+	version = "2.37"
+)
+
 var path = "./bin/"
 var files = []file{
 	{
@@ -38,28 +41,7 @@ var files = []file{
 	},
 }
 
-func fetchLatest() error {
-	resp, err := http.Get("https://chromedriver.storage.googleapis.com/LATEST_RELEASE")
-	if err != nil {
-		return fmt.Errorf("%s: error downloading latest", err)
-	}
-	defer resp.Body.Close()
-
-	latest, err = ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return fmt.Errorf("%s: can't decode latest response body", err)
-	}
-
-	fmt.Printf("\nStarting fetching latest version %q of the ChromeDriver..", string(latest))
-
-	return nil
-}
-
 func main() {
-	if err := fetchLatest(); err != nil {
-		fmt.Printf("\n%v", err)
-	}
-
 	var wg sync.WaitGroup
 	for _, file := range files {
 		wg.Add(1)
@@ -77,7 +59,7 @@ func main() {
 func handleFile(file file) error {
 	filePath := path + filepath.Base(file.url)
 
-	fmt.Printf("\nDownloading %q", fmt.Sprintf(file.url, string(latest)))
+	fmt.Printf("\nDownloading %q", fmt.Sprintf(file.url, version))
 	if err := downloadFile(file); err != nil {
 		return err
 	}
@@ -119,7 +101,7 @@ func downloadFile(file file) (err error) {
 		}
 	}()
 
-	resp, err := http.Get(fmt.Sprintf(file.url, string(latest)))
+	resp, err := http.Get(fmt.Sprintf(file.url, version))
 	if err != nil {
 		return fmt.Errorf("%s: error downloading %q: %v", filePath, file.url, err)
 	}

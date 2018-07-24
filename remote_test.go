@@ -76,6 +76,7 @@ func TestChrome(t *testing.T) {
 	}
 	c := config{
 		browser: "chrome",
+		//path: "/usr/bin/chromium",
 	}
 
 	runTests(t, c)
