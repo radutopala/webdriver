@@ -23,6 +23,8 @@ import (
 )
 
 var (
+	chromeBinary = flag.String("chrome_binary", "/usr/bin/chrome", "The name of the Chrome binary or the path to it. If name is not an exact path, the PATH will be searched.")
+
 	useDocker          = flag.Bool("docker", false, "If set, run the tests in a Docker container.")
 	runningUnderDocker = flag.Bool("running_under_docker", false, "This is set by the Docker test harness and should not be needed otherwise.")
 
@@ -63,6 +65,13 @@ func TestChrome(t *testing.T) {
 	if *useDocker {
 		t.Skip("Skipping Chrome tests because they will be run under a Docker container")
 	}
+	if _, err := os.Stat(*chromeBinary); err != nil {
+		path, err := exec.LookPath(*chromeBinary)
+		if err != nil {
+			t.Skipf("Skipping Chrome tests because binary %q not found", *chromeBinary)
+		}
+		*chromeBinary = path
+	}
 
 	var opts []ServiceOption
 	if testing.Verbose() {
@@ -76,7 +85,7 @@ func TestChrome(t *testing.T) {
 	}
 	c := config{
 		browser: "chrome",
-		path: "/usr/bin/chrome",
+		path:    *chromeBinary,
 	}
 
 	runTests(t, c)
