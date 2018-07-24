@@ -1,0 +1,6 @@
+.idea
+.DS_Store
+t.go
+coverage.txt
+coverage.out
+chromedriver*
