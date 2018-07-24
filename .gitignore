@@ -4,3 +4,4 @@ t.go
 coverage.txt
 coverage.out
 chromedriver*
+!/bin/chromedriver*
